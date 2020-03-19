@@ -4,6 +4,7 @@ import me.d3monw3st.prisoncount.Console;
 import me.d3monw3st.prisoncount.Main;
 import me.d3monw3st.prisoncount.config.Config;
 import me.d3monw3st.prisoncount.config.ConfigFiles;
+import org.bukkit.Bukkit;
 
 import javax.swing.tree.TreeNode;
 import java.io.IOException;
@@ -18,48 +19,49 @@ public class Values {
     private static String winnerMessage;
     private static String startingMessage;
     private static Map<Double, String> commands;
+    private static int id;
 
     public Values() {
 
         commands = new TreeMap<>();
-
-        //TODO: Add reading a string as a command which will execute for rewards
+        id = 0;
 
         Config.RConfig config = ConfigFiles.values;
 
         
-        minutesBetweenEvent = config.getDouble("values.minutes-between-event", minutesBetweenEvent);
+        minutesBetweenEvent = config.getDouble("settings.minutes-between-event", minutesBetweenEvent);
         if (minutesBetweenEvent == 0) {
             minutesBetweenEvent = 5.0;
         }
-        minutesLastingEvent = config.getDouble("values.minutes-lasting-event", minutesLastingEvent);
+        minutesLastingEvent = config.getDouble("settings.minutes-lasting-event", minutesLastingEvent);
         if (minutesBetweenEvent == 0) {
             minutesBetweenEvent = 5.0;
         }
         winnerMessage = config.getString("winner.message", winnerMessage);
         if (winnerMessage == null) {
-            winnerMessage = "use %s as a placeholder for the player name.";
+            winnerMessage = "&b&l[&aPrefix&b&l] &6 %s has won.";
         }
-        startingMessage = config.getString("values.begin-message", startingMessage);
+        startingMessage = config.getString("settings.begin-message", startingMessage);
         if (startingMessage == null) {
-            startingMessage = "Event has begun";
+            startingMessage = "&b&l[&aPrefix&b&l] &7Event has begun";
         }
-        //commands = (TreeMap<Double, String>) config.get ("winner.rewards.");
-
 
         try {
-            for (String s : config.getConfigurationSection("winner.commands").getKeys(true)) {
-                String cmd = config.getConfigurationSection("winner.commands").getString(s);
-                commands.put(config.getDouble(s), cmd);
+            for (String s : config.getKeys(true)) {
+
+                if (s.startsWith("winner.reward." + id) && config.getString("winner.rewards." + id + ".command") != null) {
+
+                    commands.put(config.getDouble("winner.rewards." + id  + ".chance"), s);
+                    id++;
+                } else {
+                    commands.put(15.2, "give %s diamond 12");
+                    commands.put(12.2, "give %s minecart 3");
+                }
+                Console.log(s);
             }
         } catch (NullPointerException e) {
-            if (commands == null || commands.isEmpty()) {
-                commands.put(15.2,"/give %s 1 12");
-            }
+            e.printStackTrace();
         }
-
-        //config.getConfigurationSection("cmds.").getKeys(false).forEach(commands.put(chance -> config.getDouble("cmds."), config.getString("cmds." + chance));
-
         Console.log("Minutes between events set at " + minutesBetweenEvent);
         Console.log("Minutes lasting for an event set at " + minutesLastingEvent);
         Console.log("Winner Message" + winnerMessage);
@@ -96,17 +98,18 @@ public class Values {
     public static void saveValues() {
         try {
             Config.RConfig config = ConfigFiles.values;
-            config.set("values.minutes-between-event", minutesBetweenEvent);
-            config.set("values.minutes-lasting-event", minutesLastingEvent);
-            config.set("values.message", startingMessage);
+            config.set("settings.minutes-between-event", minutesBetweenEvent);
+            config.set("settings.minutes-lasting-event", minutesLastingEvent);
+            config.set("settings.begin-message", startingMessage);
             config.set("winner.message", winnerMessage);
 
+            id = 0;
             for(Map.Entry<Double, String> cmdsToStore : commands.entrySet()) {
-                config.getConfigurationSection("winner.commands").set(cmdsToStore.getKey().toString(), cmdsToStore.getValue());
+                config.set("winner.rewards." + id  + ".command", cmdsToStore.getValue());
+                config.set("winner.rewards." + id  + ".chance", cmdsToStore.getKey());
+                id++;
             }
 
-
-            //config.set("winner.rewards", commands);
             config.save();
         } catch (IOException ex) {
             ex.printStackTrace();

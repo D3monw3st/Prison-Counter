@@ -1,9 +1,12 @@
 package me.d3monw3st.prisoncount;
 
 import me.d3monw3st.prisoncount.config.ConfigFiles;
+import me.d3monw3st.prisoncount.data.PlayerData;
+import me.d3monw3st.prisoncount.data.PlayerDataManager;
 import me.d3monw3st.prisoncount.data.Values;
 import me.d3monw3st.prisoncount.runnables.MineRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,8 +15,6 @@ public class Main extends JavaPlugin {
 
     private static Main plugin;
     private static Values values;
-   // private File configFile;
-   // private FileConfiguration fileConfig;
 
 
     @Override
@@ -26,8 +27,8 @@ public class Main extends JavaPlugin {
         registerValues();
         registerEvents();
         startTask();
+        registerOnlinePlayer();
         Console.log("Prison Counter enabled successfully.");
-
     }
 
     @Override
@@ -60,6 +61,17 @@ public class Main extends JavaPlugin {
 
     public static Values getValues() {
         return values;
+    }
+
+    public void registerOnlinePlayer() {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            PlayerData pdata = PlayerDataManager.getPlayerData(p.getUniqueId());
+            if (!PlayerDataManager.hasPlayerData(p.getUniqueId()) || pdata == null) {
+                PlayerDataManager.createPlayerData(p.getUniqueId());
+            }
+
+
+        }
     }
 
 }

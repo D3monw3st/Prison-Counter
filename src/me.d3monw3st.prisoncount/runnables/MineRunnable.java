@@ -8,7 +8,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.print.attribute.standard.PDLOverrideSupported;
 import java.util.Map;
 
 public class MineRunnable extends BukkitRunnable {
@@ -31,7 +30,10 @@ public class MineRunnable extends BukkitRunnable {
         // Start event run once every time
         if (Main.getValues().isStarted() == false && (double) (System.currentTimeMillis() - timeLastEvent)/60000 >= Main.getValues().getMinutesBetweenEvent() && eventActive == false) {
 
-            Bukkit.broadcastMessage(Main.getValues().getStartingMessage());
+            String startingMessage = Main.getValues().getStartingMessage();
+            startingMessage = startingMessage.replaceAll("&", "§");
+
+            Bukkit.broadcastMessage(startingMessage);
 
             for (Player p : Bukkit.getOnlinePlayers()) {
                 PlayerData pdata = PlayerDataManager.getPlayerData(p.getUniqueId());
@@ -71,6 +73,7 @@ public class MineRunnable extends BukkitRunnable {
 
                 // Announce the winners
                 String broadcast = Main.getValues().getWinnerMessage().replaceAll("%s", tempPlayerTop.getName());
+                broadcast = broadcast.replaceAll("&", "§");
                 Bukkit.broadcastMessage(broadcast);
 
 
@@ -88,16 +91,12 @@ public class MineRunnable extends BukkitRunnable {
                     cmd = low != null ? low.getValue() : high.getValue();
                 }
 
+                cmd = cmd.replaceAll("%s", tempPlayerTop.getName());
+
                 if (cmd != null) {
                     Bukkit.dispatchCommand(console, cmd);
                 }
 
-
-                /*for (int i = 0; i < Main.getValues().getCommands().size(); i++) {
-                    String command = Main.getValues().getCommands().get(i);
-                    command.replaceAll("%s", tempPlayerTop.getName());
-                    Bukkit.dispatchCommand(console, command);
-                }*/
             }
 
 

@@ -1,9 +1,6 @@
 package me.d3monw3st.prisoncount.config;
 
 import me.d3monw3st.prisoncount.Console;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
