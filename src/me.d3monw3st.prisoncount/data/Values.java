@@ -5,36 +5,36 @@ import me.d3monw3st.prisoncount.Main;
 import me.d3monw3st.prisoncount.config.Config;
 import me.d3monw3st.prisoncount.config.ConfigFiles;
 
+import javax.swing.tree.TreeNode;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class Values {
 
-    private static int minutesBetweenEvent;
-    private static int minutesLastingEvent;
+    private static double minutesBetweenEvent;
+    private static double minutesLastingEvent;
     private static boolean started;
     private static String winnerMessage;
     private static String startingMessage;
-    private static List<String> commands;
+    private static Map<Double, String> commands;
 
     public Values() {
 
-        commands = new ArrayList<>();
+        commands = new TreeMap<>();
 
         //TODO: Add reading a string as a command which will execute for rewards
 
         Config.RConfig config = ConfigFiles.values;
 
         
-        minutesBetweenEvent = config.getInt("values.minutes-between-event", minutesBetweenEvent);
+        minutesBetweenEvent = config.getDouble("values.minutes-between-event", minutesBetweenEvent);
         if (minutesBetweenEvent == 0) {
-            minutesBetweenEvent = 5;
+            minutesBetweenEvent = 5.0;
         }
-        minutesLastingEvent = config.getInt("values.minutes-lasting-event", minutesLastingEvent);
+        minutesLastingEvent = config.getDouble("values.minutes-lasting-event", minutesLastingEvent);
         if (minutesBetweenEvent == 0) {
-            minutesBetweenEvent = 5;
+            minutesBetweenEvent = 5.0;
         }
         winnerMessage = config.getString("winner.message", winnerMessage);
         if (winnerMessage == null) {
@@ -44,16 +44,21 @@ public class Values {
         if (startingMessage == null) {
             startingMessage = "Event has begun";
         }
-        commands = (List<String>) config.getList("winner.rewards", commands);
-        if (commands == null || commands.isEmpty()) {
-            commands.add("/give %s 1 diamondsword");
+        //commands = (TreeMap<Double, String>) config.get ("winner.rewards.");
+
+
+        try {
+            for (String s : config.getConfigurationSection("winner.commands").getKeys(true)) {
+                String cmd = config.getConfigurationSection("winner.commands").getString(s);
+                commands.put(config.getDouble(s), cmd);
+            }
+        } catch (NullPointerException e) {
+            if (commands == null || commands.isEmpty()) {
+                commands.put(15.2,"/give %s 1 12");
+            }
         }
 
-            //Main.getPlugin().getFileConfig().load();
-            /*minutesBetweenEvent = Main.getPlugin().getFileConfig().getInt("values.minutes-between-event", minutesBetweenEvent);
-            minutesLastingEvent = Main.getPlugin().getFileConfig().getInt("values.minutes-lasting-event", minutesLastingEvent);
-            winnerMessage = Main.getPlugin().getFileConfig().getString("values.winner.winnermessage", winnerMessage);
-            commands = (List<String>) Main.getPlugin().getFileConfig().getList("values.winner.rewards", commands);*/
+        //config.getConfigurationSection("cmds.").getKeys(false).forEach(commands.put(chance -> config.getDouble("cmds."), config.getString("cmds." + chance));
 
         Console.log("Minutes between events set at " + minutesBetweenEvent);
         Console.log("Minutes lasting for an event set at " + minutesLastingEvent);
@@ -68,11 +73,11 @@ public class Values {
         return started;
     }
 
-    public int getMinutesBetweenEvent() {
+    public double getMinutesBetweenEvent() {
         return minutesBetweenEvent;
     }
 
-    public int getMinutesLastingEvent() {
+    public double getMinutesLastingEvent() {
         return minutesLastingEvent;
     }
 
@@ -84,8 +89,8 @@ public class Values {
         return winnerMessage;
     }
 
-    public List<String> getCommands() {
-        return commands;
+    public TreeMap<Double, String> getCommands() {
+        return (TreeMap<Double, String>) commands;
     }
 
     public static void saveValues() {
@@ -95,7 +100,13 @@ public class Values {
             config.set("values.minutes-lasting-event", minutesLastingEvent);
             config.set("values.message", startingMessage);
             config.set("winner.message", winnerMessage);
-            config.set("winner.rewards", commands);
+
+            for(Map.Entry<Double, String> cmdsToStore : commands.entrySet()) {
+                config.getConfigurationSection("winner.commands").set(cmdsToStore.getKey().toString(), cmdsToStore.getValue());
+            }
+
+
+            //config.set("winner.rewards", commands);
             config.save();
         } catch (IOException ex) {
             ex.printStackTrace();

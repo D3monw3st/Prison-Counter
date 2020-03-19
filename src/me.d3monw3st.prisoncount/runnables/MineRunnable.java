@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.print.attribute.standard.PDLOverrideSupported;
+import java.util.Map;
 
 public class MineRunnable extends BukkitRunnable {
 
@@ -28,7 +29,7 @@ public class MineRunnable extends BukkitRunnable {
 
 
         // Start event run once every time
-        if (Main.getValues().isStarted() == false && (int) (System.currentTimeMillis() - timeLastEvent)/60000 == Main.getValues().getMinutesBetweenEvent() && eventActive == false) {
+        if (Main.getValues().isStarted() == false && (double) (System.currentTimeMillis() - timeLastEvent)/60000 >= Main.getValues().getMinutesBetweenEvent() && eventActive == false) {
 
             Bukkit.broadcastMessage(Main.getValues().getStartingMessage());
 
@@ -47,7 +48,7 @@ public class MineRunnable extends BukkitRunnable {
         }
 
         // Stop the event now that it's complete
-        if (eventActive && (int) (System.currentTimeMillis() - timeLastEvent)/60000 == Main.getValues().getMinutesLastingEvent()) {
+        if (eventActive && (double) (System.currentTimeMillis() - timeLastEvent)/60000 >= Main.getValues().getMinutesLastingEvent()) {
 
             Player tempPlayerTop = null;
             int blocksBreaked = 0;
@@ -67,11 +68,36 @@ public class MineRunnable extends BukkitRunnable {
             if (tempPlayerTop != null) {
                 //Announce the winner and give items.
                 ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-                Bukkit.broadcastMessage(String.format(Main.getValues().getWinnerMessage(), tempPlayerTop.getName()));
-                for (int i = 0; i < Main.getValues().getCommands().size(); i++) {
-                    String command = Main.getValues().getCommands().get(i);
-                    Bukkit.dispatchCommand(console, command);
+
+                // Announce the winners
+                String broadcast = Main.getValues().getWinnerMessage().replaceAll("%s", tempPlayerTop.getName());
+                Bukkit.broadcastMessage(broadcast);
+
+
+                // Calculate reward
+                double randomChance = Math.random() * 100;
+                Map.Entry<Double,String> low = Main.getValues().getCommands().floorEntry(randomChance);
+                Map.Entry<Double, String> high = Main.getValues().getCommands().ceilingEntry(randomChance);
+                String cmd = null;
+
+                if (low != null && high != null) {
+                    cmd = Math.abs(randomChance-low.getKey()) < Math.abs(randomChance-high.getKey())
+                            ?   low.getValue()
+                            :   high.getValue();
+                } else if (low != null || high != null) {
+                    cmd = low != null ? low.getValue() : high.getValue();
                 }
+
+                if (cmd != null) {
+                    Bukkit.dispatchCommand(console, cmd);
+                }
+
+
+                /*for (int i = 0; i < Main.getValues().getCommands().size(); i++) {
+                    String command = Main.getValues().getCommands().get(i);
+                    command.replaceAll("%s", tempPlayerTop.getName());
+                    Bukkit.dispatchCommand(console, command);
+                }*/
             }
 
 

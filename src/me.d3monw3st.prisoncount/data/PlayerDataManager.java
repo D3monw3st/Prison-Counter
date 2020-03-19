@@ -2,12 +2,12 @@ package me.d3monw3st.prisoncount.data;
 
 import me.d3monw3st.prisoncount.Console;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.UUID;
 
 public class PlayerDataManager {
 
-    private static HashMap<UUID, PlayerData> playerData = new HashMap<>();
+    private static TreeMap<UUID, PlayerData> playerData = new TreeMap<>();
     public static boolean hasPlayerData(UUID uuid) {
         return playerData.containsKey(uuid);
     }
