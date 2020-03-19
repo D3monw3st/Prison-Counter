@@ -29,10 +29,16 @@ public class Values {
 
         
         minutesBetweenEvent = config.getInt("values.minutes-between-event", minutesBetweenEvent);
+        if (minutesBetweenEvent == 0) {
+            minutesBetweenEvent = 5;
+        }
         minutesLastingEvent = config.getInt("values.minutes-lasting-event", minutesLastingEvent);
+        if (minutesBetweenEvent == 0) {
+            minutesBetweenEvent = 5;
+        }
         winnerMessage = config.getString("winner.message", winnerMessage);
         if (winnerMessage == null) {
-            winnerMessage = "%s has won - use %s as a placeholder for the player name.";
+            winnerMessage = "use %s as a placeholder for the player name.";
         }
         startingMessage = config.getString("values.begin-message", startingMessage);
         if (startingMessage == null) {

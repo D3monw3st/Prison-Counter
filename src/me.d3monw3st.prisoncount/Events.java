@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 public class Events implements Listener {
 
@@ -29,6 +30,17 @@ public class Events implements Listener {
             pdata.setBlocksBreaked(pdata.getBlocksBreaked() + 1);
 
         }
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+
+        if (!PlayerDataManager.hasPlayerData(player.getUniqueId())) {
+            PlayerDataManager.createPlayerData(player.getUniqueId());
+        }
+
+
     }
 
 
