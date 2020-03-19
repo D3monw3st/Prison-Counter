@@ -17,7 +17,7 @@ public class PlayerDataManager {
             Console.warn(String.format("Tried to create player data for uuid that already exists: %s", uuid.toString()));
             return playerData.get(uuid);
         }
-        Console.log(String.format("Created player data for uuid %s", uuid.toString()));
+        //Console.log(String.format("Created player data for uuid %s", uuid.toString()));
         return playerData.put(uuid, new PlayerData(uuid));
     }
 

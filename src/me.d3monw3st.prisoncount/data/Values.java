@@ -1,12 +1,8 @@
 package me.d3monw3st.prisoncount.data;
 
-import me.d3monw3st.prisoncount.Console;
-import me.d3monw3st.prisoncount.Main;
+
 import me.d3monw3st.prisoncount.config.Config;
 import me.d3monw3st.prisoncount.config.ConfigFiles;
-import org.bukkit.Bukkit;
-
-import javax.swing.tree.TreeNode;
 import java.io.IOException;
 import java.util.*;
 
@@ -57,14 +53,13 @@ public class Values {
                     commands.put(15.2, "give %s diamond 12");
                     commands.put(12.2, "give %s minecart 3");
                 }
-                Console.log(s);
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        Console.log("Minutes between events set at " + minutesBetweenEvent);
+        /*Console.log("Minutes between events set at " + minutesBetweenEvent);
         Console.log("Minutes lasting for an event set at " + minutesLastingEvent);
-        Console.log("Winner Message" + winnerMessage);
+        Console.log("Winner Message" + winnerMessage);*/
     }
 
     public void setStarted(boolean started) {
