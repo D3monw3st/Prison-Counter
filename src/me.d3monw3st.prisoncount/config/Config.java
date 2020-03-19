@@ -24,6 +24,7 @@ public class Config {
             try {
                 copy(plugin.getResource(fileName), file);
             } catch (Exception e) {
+
             }
         }
 
@@ -53,6 +54,7 @@ public class Config {
     }
 
 
+
     public static RConfig getConfig(String id) {
         for (RConfig c : configs) {
             if (c.getConfigId().equalsIgnoreCase(id))
@@ -79,7 +81,9 @@ public class Config {
         public void load() throws InvalidConfigurationException, FileNotFoundException, IOException {
             load(file);
         }
-
+        public void save() throws IOException {
+            save(file);
+        }
 
         public boolean equals(RConfig c) {
             return c.getConfigId().equalsIgnoreCase(this.id);

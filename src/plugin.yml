@@ -1,0 +1,5 @@
+name: PrisonCount
+author: D3monw3st
+api-version: 1.13
+version: 1.0.0
+main: me.d3monw3st.prisoncount.Main

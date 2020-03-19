@@ -30,6 +30,7 @@ public class MineRunnable extends BukkitRunnable {
         // Start event run once every time
         if (Main.getValues().isStarted() == false && (int) (System.currentTimeMillis() - timeLastEvent)/60000 == Main.getValues().getMinutesBetweenEvent() && eventActive == false) {
 
+            Bukkit.broadcastMessage(Main.getValues().getStartingMessage());
 
             for (Player p : Bukkit.getOnlinePlayers()) {
                 PlayerData pdata = PlayerDataManager.getPlayerData(p.getUniqueId());

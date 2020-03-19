@@ -4,21 +4,33 @@ import me.d3monw3st.prisoncount.config.ConfigFiles;
 import me.d3monw3st.prisoncount.data.Values;
 import me.d3monw3st.prisoncount.runnables.MineRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Main extends JavaPlugin {
 
     private static Main plugin;
     private static Values values;
+   // private File configFile;
+   // private FileConfiguration fileConfig;
 
 
     @Override
     public void onEnable() {
+        plugin = this;
+
+
+        //createConfig();
+        ConfigFiles.registerConfig();
         registerValues();
         registerEvents();
         startTask();
-        ConfigFiles.registerConfig();
         Console.log("Prison Counter enabled successfully.");
 
     }
@@ -27,7 +39,7 @@ public class Main extends JavaPlugin {
     public void onDisable() {
 
         Console.log("Prison Counter disabled successfully.");
-
+        Values.saveValues();
     }
 
 
@@ -51,7 +63,32 @@ public class Main extends JavaPlugin {
         return plugin;
     }
 
+   /* public void createConfig() {
+        configFile = new File(getDataFolder(), "config.yml");
+
+        if (!configFile.exists()) {
+            configFile.getParentFile().mkdirs();
+            saveResource("config.yml", false);
+        }
+
+        fileConfig = new YamlConfiguration();
+        try {
+            fileConfig.load(configFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+
+    }*/
+
     public static Values getValues() {
         return values;
     }
+
+    /*public File getConfigFile() {
+        return configFile;
+    }
+
+    public FileConfiguration getFileConfig() {
+        return fileConfig;
+    }*/
 }

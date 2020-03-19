@@ -11,6 +11,7 @@ public class ConfigFiles {
         Config.registerConfig("config", "config.yml", Main.getPlugin());
         Config.load("config");
 
+        values = Config.getConfig("config");
     }
 
 }
