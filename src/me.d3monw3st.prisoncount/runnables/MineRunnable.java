@@ -84,9 +84,15 @@ public class MineRunnable extends BukkitRunnable {
                 String cmd = null;
 
                 if (low != null && high != null) {
-                    cmd = Math.abs(randomChance-low.getKey()) < Math.abs(randomChance-high.getKey())
-                            ?   low.getValue()
-                            :   high.getValue();
+                    int tempLow = (int) Math.abs(randomChance - low.getKey());
+                    int tempHigh = (int) Math.abs(randomChance - high.getKey());
+
+                    if (tempLow < tempHigh) {
+                        cmd = low.getValue();
+                    } else {
+                        cmd = high.getValue();
+                    }
+                    //cmd = Math.abs(randomChance-low.getKey()) < Math.abs(randomChance-high.getKey()) ?   low.getValue() :   high.getValue();
                 } else if (low != null || high != null) {
                     cmd = low != null ? low.getValue() : high.getValue();
                 }

@@ -14,6 +14,8 @@ public class Values {
     private static boolean started;
     private static String winnerMessage;
     private static String startingMessage;
+    private static String leaderBarMessage;
+    private static String playerBarMessage;
     private static Map<Double, String> commands;
     private static int id;
 
@@ -30,9 +32,20 @@ public class Values {
             minutesBetweenEvent = 5.0;
         }
         minutesLastingEvent = config.getDouble("settings.minutes-lasting-event", minutesLastingEvent);
-        if (minutesBetweenEvent == 0) {
-            minutesBetweenEvent = 5.0;
+        if (minutesLastingEvent == 0) {
+            minutesLastingEvent = 2.0;
         }
+
+        leaderBarMessage = config.getString("settings.bar.leader", leaderBarMessage);
+        if (leaderBarMessage == null) {
+            leaderBarMessage = "&3Leader |&b %s &3|&b %c ";
+        }
+
+        playerBarMessage = config.getString("settings.bar.player", playerBarMessage);
+        if (playerBarMessage == null) {
+            playerBarMessage = "&3Blocks Broken:&b %c";
+        }
+
         winnerMessage = config.getString("winner.message", winnerMessage);
         if (winnerMessage == null) {
             winnerMessage = "&b&l[&aPrefix&b&l] &6 %s has won.";
@@ -86,6 +99,14 @@ public class Values {
         return winnerMessage;
     }
 
+    public static String getLeaderBarMessage() {
+        return leaderBarMessage;
+    }
+
+    public static String getPlayerBarMessage() {
+        return playerBarMessage;
+    }
+
     public TreeMap<Double, String> getCommands() {
         return (TreeMap<Double, String>) commands;
     }
@@ -97,6 +118,8 @@ public class Values {
             config.set("settings.minutes-lasting-event", minutesLastingEvent);
             config.set("settings.begin-message", startingMessage);
             config.set("winner.message", winnerMessage);
+            config.set("settings.bar.leader", leaderBarMessage);
+            config.set("settings.bar.player", playerBarMessage);
 
             id = 0;
             for(Map.Entry<Double, String> cmdsToStore : commands.entrySet()) {

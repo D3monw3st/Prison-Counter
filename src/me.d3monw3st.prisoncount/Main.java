@@ -4,8 +4,10 @@ import me.d3monw3st.prisoncount.config.ConfigFiles;
 import me.d3monw3st.prisoncount.data.PlayerData;
 import me.d3monw3st.prisoncount.data.PlayerDataManager;
 import me.d3monw3st.prisoncount.data.Values;
+import me.d3monw3st.prisoncount.runnables.LeaderboardsRunnable;
 import me.d3monw3st.prisoncount.runnables.MineRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,6 +38,7 @@ public class Main extends JavaPlugin {
 
         Console.log("Prison Counter disabled successfully.");
         Values.saveValues();
+        clearBossbars();
     }
 
 
@@ -52,6 +55,7 @@ public class Main extends JavaPlugin {
 
     public void startTask() {
         new MineRunnable().runTaskTimer(this, 0L, 20L);
+        new LeaderboardsRunnable().runTaskTimer(this, 0L, 10L);
     }
 
 
@@ -72,6 +76,10 @@ public class Main extends JavaPlugin {
 
 
         }
+    }
+
+    public void clearBossbars() {
+        Bukkit.getBossBars().forEachRemaining(BossBar::removeAll);
     }
 
 }
